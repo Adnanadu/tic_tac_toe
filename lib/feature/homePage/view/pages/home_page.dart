@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:tic_tac_toe/feature/homePage/view/widgets/game_board_widget.dart';
 import 'package:tic_tac_toe/feature/homePage/view/widgets/player_container_widget.dart';
+import 'package:tic_tac_toe/feature/homePage/view/widgets/reset_button_widget.dart';
 import 'package:tic_tac_toe/feature/homePage/view/widgets/winner_text_widget.dart';
 
 class TicTacToe extends HookWidget {
@@ -72,6 +74,10 @@ class TicTacToe extends HookWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          /// reset button
+          if (winner.value.isEmpty && !isTie.value)
+            ResetButtonWidget(resetGame: resetGame),
+          SizedBox(height: height * 0.04),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -104,38 +110,7 @@ class TicTacToe extends HookWidget {
             ),
 
           /// Game Board
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: GridView.builder(
-              itemCount: 9,
-              padding: const EdgeInsets.all(10),
-              shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 1,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemBuilder: (_, index) => GestureDetector(
-                onTap: () => player(index),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black38,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Text(
-                      board.value[index],
-                      style: const TextStyle(
-                        fontSize: 50,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+          GameBoardWidget(player: player, board: board),
           if (winner.value.isNotEmpty || isTie.value)
             ElevatedButton(
               onPressed: resetGame,
