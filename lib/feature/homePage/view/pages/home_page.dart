@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:tic_tac_toe/feature/homePage/view/widgets/player_container_widget.dart';
+import 'package:tic_tac_toe/feature/homePage/view/widgets/winner_text_widget.dart';
 
 class TicTacToe extends HookWidget {
   const TicTacToe({super.key});
@@ -10,9 +12,11 @@ class TicTacToe extends HookWidget {
     final currentPlayer = useState("X");
     final winner = useState("");
     final isTie = useState(false);
-    final size = MediaQuery.of(context).size;
+    final width = MediaQuery.sizeOf(context).width;
+    final height = MediaQuery.sizeOf(context).width;
 
     void checkForWinner() {
+      ///possible winning lines
       List<List<int>> lines = [
         [0, 1, 2],
         [3, 4, 5],
@@ -24,6 +28,7 @@ class TicTacToe extends HookWidget {
         [2, 4, 6],
       ];
 
+      /// Check for winner
       for (var line in lines) {
         String p1 = board.value[line[0]];
         String p2 = board.value[line[1]];
@@ -36,11 +41,14 @@ class TicTacToe extends HookWidget {
         }
       }
 
+      /// Check for Tie
+
       if (!board.value.contains("")) {
         isTie.value = true;
       }
     }
 
+    /// currentPlayer Logic
     void player(int index) {
       if (winner.value != '' || board.value[index] != "") return;
 
@@ -51,6 +59,7 @@ class TicTacToe extends HookWidget {
       checkForWinner();
     }
 
+    /// Reset Game
     void resetGame() {
       board.value = List.filled(9, "");
       currentPlayer.value = "X";
@@ -66,21 +75,24 @@ class TicTacToe extends HookWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _PlayerContainer(
+              /// Player 1
+              PlayerContainerWidget(
                 isCurrentPlayer: currentPlayer.value == "X",
                 playerName: "BOT 1",
                 symbol: "X",
               ),
-              SizedBox(width: size.width * 0.08),
-              _PlayerContainer(
+
+              /// Player 2
+              SizedBox(width: width * 0.08),
+              PlayerContainerWidget(
                 isCurrentPlayer: currentPlayer.value == "O",
                 playerName: "BOT 2",
                 symbol: "O",
               ),
             ],
           ),
-          SizedBox(height: size.height * 0.04),
-          if (winner.value.isNotEmpty) _WinnerText(winner: winner.value),
+          SizedBox(height: height * 0.04),
+          if (winner.value.isNotEmpty) WinnerTextWidget(winner: winner.value),
           if (isTie.value)
             const Text(
               "It's a Tie!",
@@ -90,6 +102,8 @@ class TicTacToe extends HookWidget {
                 color: Colors.red,
               ),
             ),
+
+          /// Game Board
           Padding(
             padding: const EdgeInsets.all(10),
             child: GridView.builder(
@@ -129,97 +143,6 @@ class TicTacToe extends HookWidget {
             ),
         ],
       ),
-    );
-  }
-}
-
-class _PlayerContainer extends StatelessWidget {
-  final bool isCurrentPlayer;
-  final String playerName;
-  final String symbol;
-
-  const _PlayerContainer({
-    required this.isCurrentPlayer,
-    required this.playerName,
-    required this.symbol,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: isCurrentPlayer ? Colors.amber : Colors.transparent,
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black38,
-            blurRadius: 3,
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const Icon(
-              Icons.person,
-              color: Colors.white,
-              size: 55,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              playerName,
-              style: const TextStyle(
-                fontSize: 30,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              symbol,
-              style: const TextStyle(
-                fontSize: 30,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _WinnerText extends StatelessWidget {
-  final String winner;
-
-  const _WinnerText({required this.winner});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          winner,
-          style: const TextStyle(
-            fontSize: 35,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const Text(
-          " WON!",
-          style: TextStyle(
-            fontSize: 35,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
     );
   }
 }
