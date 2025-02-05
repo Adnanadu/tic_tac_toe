@@ -5,8 +5,8 @@ import 'package:tic_tac_toe/feature/homePage/view/widgets/player_container_widge
 import 'package:tic_tac_toe/feature/homePage/view/widgets/reset_button_widget.dart';
 import 'package:tic_tac_toe/feature/homePage/view/widgets/winner_text_widget.dart';
 
-class TicTacToe extends HookWidget {
-  const TicTacToe({super.key});
+class HomePage extends HookWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
